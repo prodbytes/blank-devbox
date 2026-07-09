@@ -1,7 +1,15 @@
 version: "0.5"
 
 processes:
-  postgresql:
+  0-health-check:
+    command: bash scripts/health-check.sh
+    environment:
+      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL:-15}
+    availability:
+      restart: on_failure
+      backoff_seconds: 5
+
+  1-postgresql:
     command: docker compose up postgres
     shutdown:
       command: docker stop devbox-db
@@ -17,13 +25,4 @@ processes:
       restart: on_failure
       backoff_seconds: 5
 
-  health-check:
-    command: bash scripts/health-check.sh
-    environment:
-      - HEALTH_CHECK_INTERVAL=${HEALTH_CHECK_INTERVAL:-20}
-    depends_on:
-      postgresql:
-        condition: process_healthy
-    availability:
-      restart: on_failure
-      backoff_seconds: 5
+

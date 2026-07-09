@@ -48,7 +48,7 @@ starts PostgreSQL as a Docker container (`devbox-db`, defined in
 [compose.yaml](compose.yaml)) plus a `health-check` monitor wired up in
 [process-compose.yaml](process-compose.yaml). A readiness probe holds the
 monitor back until the database accepts connections; after that it logs one
-status line per check (every 20 s, configurable via `HEALTH_CHECK_INTERVAL`):
+status line per check (every 15 s, configurable via `HEALTH_CHECK_INTERVAL`):
 
 ```
 2026-07-09 20:02:10 🐘 database ✅

@@ -4,7 +4,7 @@
 # Check interval in seconds is configurable via HEALTH_CHECK_INTERVAL.
 set -uo pipefail
 
-INTERVAL="${HEALTH_CHECK_INTERVAL:-20}"
+INTERVAL="${HEALTH_CHECK_INTERVAL:-15}"
 
 check_database() {
     if pg_isready -q -h "${PGHOST:-localhost}" -p "${PGPORT:-5432}" \
