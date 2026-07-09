@@ -1,9 +1,12 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.17.5/.schema/devbox.schema.json",
-  "packages": [
-    "graalvmPackages.graalvm-ce-musl@latest",
-    "python@3.14",
-    "nodejs@26",
-    "postgresql@latest"
-  ]
+  "packages": {
+    "graalvmPackages.graalvm-ce-musl": "latest",
+    "python": "3.14",
+    "nodejs": "26",
+    "postgresql": {
+      "version": "latest",
+      "disable_plugin": true
+    }
+  }
 }

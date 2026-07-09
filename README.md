@@ -17,6 +17,10 @@ Toolchain pinned by [devbox.json](devbox.json) and locked in [devbox.lock](devbo
 | Python | 3.14.x |
 | PostgreSQL | 17.x |
 
+The container also ships the
+[docker-in-docker feature](https://github.com/devcontainers/features/tree/main/src/docker-in-docker),
+so `docker ps` works out of the box.
+
 ## Getting started
 
 Click a badge above, or locally:
@@ -34,6 +38,25 @@ devbox run node --version
 devbox add go@1.24  # add more tools (updates devbox.json + devbox.lock)
 ```
 
+## Services
+
+```bash
+devbox services up
+```
+
+starts PostgreSQL as a Docker container (`devbox-db`, defined in
+[compose.yaml](compose.yaml)) plus a `health-check` monitor wired up in
+[process-compose.yaml](process-compose.yaml). A readiness probe holds the
+monitor back until the database accepts connections; after that it logs one
+status line per check (every 20 s, configurable via `HEALTH_CHECK_INTERVAL`):
+
+```
+2026-07-09 20:02:10 🐘 database ✅
+```
+
+Stop everything with `devbox services stop`. The monitor also runs standalone:
+`bash scripts/health-check.sh`.
+
 ## How the container is built
 
 The [Containerfile](.devcontainer/Containerfile) keeps the Microsoft
@@ -46,5 +69,6 @@ The [Containerfile](.devcontainer/Containerfile) keeps the Microsoft
 3. At build time the locked store paths are fetched straight from
    `cache.nixos.org` to warm `/nix/store` (no GitHub API calls, so builds
    don't hit unauthenticated rate limits).
-4. On container start, `postCreateCommand` runs `devbox install`, which
-   re-links against the warm store and finishes in seconds.
+4. On container start, `postCreateCommand` runs `devbox install`, which finds
+   the heavy downloads already cached. The first install still evaluates
+   nixpkgs, which takes a few minutes; after that the environment is instant.
